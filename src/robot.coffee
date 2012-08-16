@@ -1,6 +1,6 @@
 Fs         = require 'fs'
-Log        = require 'log'
 Path       = require 'path'
+Log        = require 'log'
 HttpClient = require 'scoped-http-client'
 
 User                                                    = require './user'

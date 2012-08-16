@@ -1,10 +1,10 @@
 Tests  = require './tests'
-assert = require 'assert'
-helper = Tests.helper()
+Assert = require 'assert'
 
 Robot         = require '../src/robot'
 {TextMessage} = require '../src/message'
 
+helper = Tests.helper()
 require('../src/scripts/google-images') helper
 
 # start up a danger room for google images
@@ -20,14 +20,14 @@ danger = Tests.danger helper, (req, res, url) ->
 # callbacks for when hubot sends messages
 mu    = "http://mustachify.me/?src="
 tests = [
-  (msg) -> assert.equal "#{mu}(foo)#.png", msg
-  (msg) -> assert.equal "#{mu}(foo)#.png", msg
-  (msg) -> assert.equal "#{mu}(foo)#.png", msg
-  (msg) -> assert.equal "#{mu}(foo)#.png", msg
-  (msg) -> assert.equal "(foo)#.png", msg
-  (msg) -> assert.equal "(foo)#.png", msg
-  (msg) -> assert.equal "(foo)#.png", msg
-  (msg) -> assert.equal "(animated foo)#.png", msg
+  (msg) -> Assert.equal "#{mu}(foo)#.png", msg
+  (msg) -> Assert.equal "#{mu}(foo)#.png", msg
+  (msg) -> Assert.equal "#{mu}(foo)#.png", msg
+  (msg) -> Assert.equal "#{mu}(foo)#.png", msg
+  (msg) -> Assert.equal "(foo)#.png", msg
+  (msg) -> Assert.equal "(foo)#.png", msg
+  (msg) -> Assert.equal "(foo)#.png", msg
+  (msg) -> Assert.equal "(animated foo)#.png", msg
 ]
 
 # run the async tests

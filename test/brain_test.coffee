@@ -1,4 +1,4 @@
-assert = require 'assert'
+Assert = require 'assert'
 
 Brain  = require '../src/brain'
 
@@ -12,7 +12,7 @@ brain.on 'save', (data) ->
   is_closing = closing
   saved = closing = true
   brain.close() if !is_closing
-  assert.equal 1, data.abc
+  Assert.equal 1, data.abc
 
 brain.on 'close', ->
   closed = true
@@ -21,5 +21,5 @@ brain.data.abc = 1
 brain.resetSaveInterval 0.1
 
 process.on 'exit', ->
-  assert.ok saved
-  assert.ok closed
+  Assert.ok saved
+  Assert.ok closed
