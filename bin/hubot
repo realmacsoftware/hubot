@@ -92,7 +92,7 @@ else
     robot.load scriptPath
 
     scriptsFile = Path.join __dirname, "..", "hubot-scripts.json"
-    Path.exists scriptsFile, (exists) =>
+    Fs.exists scriptsFile, (exists) =>
       if exists
         Fs.readFile scriptsFile, (err, data) ->
           scripts = JSON.parse data
