@@ -34,7 +34,7 @@ class Shell extends Adapter
     @repl.on 'line', (buffer) =>
       @repl.close() if buffer.toLowerCase() is 'exit'
       @repl.prompt()
-      user = @userForId '1', name: 'Shell', room: 'Shell'
+      user = @userForId '1', name: process.env["USER"] || "Shell", room: 'Shell'
       @receive new TextMessage user, buffer
 
     self.emit 'connected'
