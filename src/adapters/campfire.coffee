@@ -172,20 +172,15 @@ class CampfireStreaming extends EventEmitter
         "method" : "GET"
         "headers": headers
 
-      console.log "#{options['method']} #{options['path']}"
-
       request = HTTPS.request options, (response) ->
         response.setEncoding("utf8")
 
         buf = ''
 
         response.on "error", (err) ->
-          console.log "response error: #{err}"
           callback err, null
 
         response.on "data", (chunk) ->
-          console.log "stream chunk: #{chunk}"
-          
           if chunk is ' '
             # campfire api sends a ' ' heartbeat every 3s
 
@@ -229,7 +224,6 @@ class CampfireStreaming extends EventEmitter
 
   request: (method, path, body, callback) ->
     logger = @campfire.robot.logger
-    console.log "#{method} #{path}"
 
     headers =
       "Authorization" : @authorization
