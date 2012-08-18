@@ -8,17 +8,17 @@ class Creator
   # path - A String directory to create/upgrade scripts for
   constructor: (path) ->
     @path = path
-    @templateDir = "#{__dirname}/templates"
-    @scriptsDir  = "#{__dirname}/scripts"
+    @templateDir = Path.join(__dirname, "templates")
+    @scriptsDir = Path.join(__dirname, "scripts")
 
-  # Create a folder if it doesn't already exist.
+  # Create a folder if it doesnt already exist.
   #
   # Returns nothing.
-  mkdirDashP: (path) ->
-    Fs.exists path, (exists) ->
-      unless exists
-        Fs.mkdir path, 0o0755, (err) ->
-          throw err if err
+  mkdirSafe: (path) ->
+    try
+      Fs.mkdirSync(path, 0o0755)
+    catch err
+      throw err unless err.code == "EEXIST"
 
   # Copy the contents of a file from one place to another.
   #
@@ -27,9 +27,10 @@ class Creator
   #
   # Returns nothing.
   copy: (from, to) ->
-    Fs.readFile from, "utf8", (err, data) ->
-      console.log "Copying #{Path.resolve(from)} -> #{Path.resolve(to)}"
-      Fs.writeFileSync to, data, "utf8"
+    Fs.readFile(from, "utf8", (err, data) ->
+      console.log("Copying #{Path.resolve(from)} -> #{Path.resolve(to)}")
+      Fs.writeFileSync(to, data, "utf8")
+    )
 
   # Copy the default scripts hubot ships with to the scripts folder
   # This allows people to easily remove scripts hubot defaults to if
@@ -41,7 +42,7 @@ class Creator
   # Returns nothing.
   copyDefaultScripts: (path) ->
     for file in Fs.readdirSync(@scriptsDir)
-      @copy "#{@scriptsDir}/#{file}", "#{path}/#{file}"
+      @copy("#{@scriptsDir}/#{file}", "#{path}/#{file}")
 
   # Public: Run the creator process.
   #
@@ -50,13 +51,16 @@ class Creator
   #
   # Returns nothing.
   run: ->
-    console.log "Creating a hubot install at #{@path}"
+    self = @
+    path = self.path
 
-    @mkdirDashP(@path)
-    @mkdirDashP("#{@path}/bin")
-    @mkdirDashP("#{@path}/scripts")
+    console.log("Creating a hubot install at #{path}")
 
-    @copyDefaultScripts("#{@path}/scripts")
+    self.mkdirSafe(path)
+    self.mkdirSafe("#{path}/bin")
+    self.mkdirSafe("#{path}/scripts")
+
+    @copyDefaultScripts("#{path}/scripts")
 
     files = [
       "Procfile",
@@ -67,6 +71,7 @@ class Creator
       "hubot-scripts.json"
     ]
 
-    @copy "#{@templateDir}/#{file}", "#{@path}/#{file}" for file in files
+    for file in files
+      @copy("#{@templateDir}/#{file}", "#{path}/#{file}")
 
 module.exports = Creator
