@@ -19,9 +19,14 @@ appendAmbush = (data, toUser, fromUser, message) ->
   else
     data[toUser.name] = [[fromUser.name, message]]
 
+refreshAmbushes = (robot) ->
+  robot.brain.data.ambushes ||= {}
+
 module.exports = (robot) ->
-  robot.brain.on 'loaded', =>
-    robot.brain.data.ambushes ||= {}
+  refreshAmbushes(robot)
+
+  robot.brain.on 'loaded', ->
+    refreshAmbushes(robot)
 
   robot.respond /ambush (.*): (.*)/i, (msg) ->
     users = robot.usersForFuzzyName(msg.match[1])
@@ -35,9 +40,16 @@ module.exports = (robot) ->
       msg.send "#{msg.match[1]}? Never heard of 'em"
   
   robot.hear /./i, (msg) ->
-    if (ambushes = robot.brain.data.ambushes[msg.message.user.name])
-      msg.send "Hey, " + msg.message.user.name + ", while you were out:"
-      for ambush in ambushes
-        msg.send ambush[0] + " says: " + ambush[1]
-      msg.send "That's it. You were greatly missed."
-      delete robot.brain.data.ambushes[msg.message.user.name]
+    ambushes = robot.brain.data.ambushes
+    return if ambushes == undefined
+    
+    senderName = msg.message.user.name
+    ambushesForSender = ambushes[senderName]
+    return unless ambushesForSender?
+    
+    msg.send "Hey, #{senderName} while you were out:"
+    for ambush in ambushesForSender
+      msg.send "#{ambush[0]} says: #{ambush[1]}"
+    msg.send "That's it. You were greatly missed."
+    
+    delete ambushes[senderName]
