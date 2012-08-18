@@ -88,8 +88,11 @@ else
   robot.alias = Options.alias
 
   loadScripts = ->
-    scriptPath = Path.join __dirname, "..", "src", "scripts"
-    robot.load scriptPath
+    scriptsPath = Path.join __dirname, "..", "scripts"
+    robot.load scriptsPath
+    
+    scriptsPath = Path.join __dirname, "..", "src", "scripts"
+    robot.load scriptsPath
 
     scriptsFile = Path.join __dirname, "..", "hubot-scripts.json"
     Fs.exists scriptsFile, (exists) =>
@@ -102,4 +105,3 @@ else
   robot.adapter.on 'connected', loadScripts
 
   robot.run()
-
